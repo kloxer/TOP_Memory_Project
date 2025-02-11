@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import "./images.css"
 const countryListAlpha2 = {
   AF: "Afghanistan",
   AL: "Albania",
@@ -252,67 +252,58 @@ const countryListAlpha2 = {
   AX: "Åland Islands",
 };
 
-let shorterList = [];
-let i = 0;
-console.log("i starts");
-while (i < 20) {
-  let randomNumber = Math.floor(
-    Math.random() * Object.keys(countryListAlpha2).length - 1
-  );
-  console.log(Object.keys(countryListAlpha2).length);
-  console.log(Object.keys(countryListAlpha2)[randomNumber]);
-  shorterList.push(Object.keys(countryListAlpha2)[randomNumber]);
-  i += 1;
-}
 
 function DisplayGame() {
-  const countryList = shorterList;
 
-  console.log(countryList[2]);
-
-  async function getImage(countryCode) {
-    const imageUrl = "https://flagsapi.com/CA/shiny/64.png";
-    const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(imageUrl);
-
-    try {
-      const response = await fetch(url, { mode: "cors" });
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
-      const json = await response.json();
-      console.log(json);
-    } catch (error) {
-      console.error(error.message);
-    }
+  let loading = false; //state can be calculated based on num of urls so no need to create a seperate state
+  const [urls, setImg] = useState([
+    {
+    link: "",
+    title:"",
+    id:"",
+  }]);
+  if (urls.length > 1){
+    loading = true; 
   }
-
-  const [url, setImg] = useState("");
   useEffect(() => {
     let flag = false;
     async function getGif(query) {
-      const url = `https://api.giphy.com/v1/gifs/translate?api_key=zWj4OOUybyP8xoYmYOpivph7HplwFqTQ&s=${query}`;
+      const url = `https://api.giphy.com/v1/gifs/search?api_key=fcUtonT0Ion9FCqAtKat33zAmijwJ3JF&q=${query}&limit=8&offset=0&rating=g&lang=en&bundle=messaging_non_clips`;
       const response = await fetch(url, { mode: "cors" });
       const json = await response.json();
-      console.log(json.data.images.original.url);
+      const arr = []
+      json.data.map(data => {
+        const r = {
+          link: data.images.original.url,
+          title: data.title,
+          id: Date.now()
+        }
+        arr.push(r);
+    
+      })
       if (flag == true) {
-        setImg(json.data.images.original.url);
+        setImg(arr);
       }
     }
-    getGif("cat");
+    getGif("cats");
     return () => {
       flag = true;
-      setImg("");
     };
   }, []);
 
-  // const response = getImage("CA");
 
+ 
   return (
-    <>
-      <p>{countryListAlpha2["CA"]}</p>
-      <img src={url} />
-      <img src="https://flagsapi.com/CA/shiny/64.png" alt="Canada Flag" />
-    </>
+    <div className="container">
+      {loading ? 
+       urls.map(url=> {
+        return <div className="imgCard" key={url.key} id="divz" onClick={() => console.log("url")}>
+          <img src={url.link} /> 
+          <p>{url.title}</p>
+        </div>
+      }) : <h2>"Loading..."</h2> } 
+    </div>
   );
 }
+
 export default DisplayGame;
