@@ -272,11 +272,11 @@ function DisplayGame() {
       const response = await fetch(url, { mode: "cors" });
       const json = await response.json();
       const arr = []
-      json.data.map(data => {
-        const r = {
+      json.data.forEach((data,index) => {
+        let r = {
           link: data.images.original.url,
           title: data.title,
-          id: Date.now()
+          id: data.id
         }
         arr.push(r);
     
@@ -297,7 +297,7 @@ function DisplayGame() {
     <div className="container">
       {loading ? 
        urls.map(url=> {
-        return <div className="imgCard" key={url.key} id="divz" onClick={() => console.log("url")}>
+        return <div className="imgCard" key={url.id} id={url.id} onClick={() => console.log(url.id)}>
           <img src={url.link} /> 
           <p>{url.title}</p>
         </div>
