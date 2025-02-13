@@ -270,7 +270,7 @@ function DisplayGame() {
   useEffect(() => {
     let flag = false;
     async function getGif(query) {
-      const url = `https://api.giphy.com/v1/gifs/search?api_key=fcUtonT0Ion9FCqAtKat33zAmijwJ3JF&q=${query}&limit=16&offset=0&rating=g&lang=en&bundle=messaging_non_clips`;
+      const url = `https://api.giphy.com/v1/gifs/search?api_key=fcUtonT0Ion9FCqAtKat33zAmijwJ3JF&q=${query}&limit=12&offset=0&rating=g&lang=en&bundle=messaging_non_clips`;
       const response = await fetch(url, { mode: "cors" });
       const json = await response.json();
       const arr = [];
@@ -321,20 +321,29 @@ function DisplayGame() {
   const [previousImages, setPreviousImages] = useState([]);
 
   return (
-    <div className="container">
-      {loading ? (
-        urls.map((url) => {
-          return (
-            <div className="imgCard" key={url.id} id={url.id} onClick={shuffle}>
-              <img src={url.link} id={url.id} />
-              <p id={url.id}>{url.title}</p>
-            </div>
-          );
-        })
-      ) : (
-        <h2>"Loading..."</h2>
-      )}
+    <div>
+      <h2>Cat Memory Game</h2>
       <p className="score">Score: {previousImages.length}</p>
+
+      <div className="container">
+        {loading ? (
+          urls.map((url) => {
+            return (
+              <div
+                className="imgCard"
+                key={url.id}
+                id={url.id}
+                onClick={shuffle}
+              >
+                <img src={url.link} id={url.id} />
+                <p id={url.id}>{url.title}</p>
+              </div>
+            );
+          })
+        ) : (
+          <h2>"Loading..."</h2>
+        )}
+      </div>
     </div>
   );
 }
