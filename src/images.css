@@ -38,3 +38,6 @@ body{
 img{
     border-style: solid;
 }
+.container:hover{
+    cursor: pointer;
+}
