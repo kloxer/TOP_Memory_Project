@@ -7,6 +7,6 @@ import DisplayGame from "./memorygame.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <DisplayGame />
-    <App />
+    {/* <App /> */}
   </StrictMode>
 );

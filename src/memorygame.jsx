@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./images.css"
+import "./images.css";
 const countryListAlpha2 = {
   AF: "Afghanistan",
   AL: "Albania",
@@ -252,35 +252,36 @@ const countryListAlpha2 = {
   AX: "Åland Islands",
 };
 
-
 function DisplayGame() {
-
   let loading = false; //state can be calculated based on num of urls so no need to create a seperate state
+
   const [urls, setImg] = useState([
     {
-    link: "",
-    title:"",
-    id:"",
-  }]);
-  if (urls.length > 1){
-    loading = true; 
+      link: "",
+      title: "",
+      id: "",
+    },
+  ]);
+
+  if (urls.length > 1) {
+    loading = true;
   }
+
   useEffect(() => {
     let flag = false;
     async function getGif(query) {
-      const url = `https://api.giphy.com/v1/gifs/search?api_key=fcUtonT0Ion9FCqAtKat33zAmijwJ3JF&q=${query}&limit=8&offset=0&rating=g&lang=en&bundle=messaging_non_clips`;
+      const url = `https://api.giphy.com/v1/gifs/search?api_key=fcUtonT0Ion9FCqAtKat33zAmijwJ3JF&q=${query}&limit=16&offset=0&rating=g&lang=en&bundle=messaging_non_clips`;
       const response = await fetch(url, { mode: "cors" });
       const json = await response.json();
-      const arr = []
-      json.data.forEach((data,index) => {
+      const arr = [];
+      json.data.forEach((data, index) => {
         let r = {
           link: data.images.original.url,
           title: data.title,
-          id: data.id
-        }
+          id: data.id,
+        };
         arr.push(r);
-    
-      })
+      });
       if (flag == true) {
         setImg(arr);
       }
@@ -291,17 +292,49 @@ function DisplayGame() {
     };
   }, []);
 
+  function shuffle(e) {
+    if (!previousImages.includes(e.target.id)) {
+      setPreviousImages([...previousImages, e.target.id]);
+      console.log("here");
+    } else {
+      setPreviousImages([]);
+    }
 
- 
+    console.log(e.target.id);
+    let currentIndex = urls.length;
+    let array = [...urls]; // Create a copy of the array
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+      // Pick a remaining element...
+      let randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex],
+        array[currentIndex],
+      ];
+    }
+    console.log("SETTING");
+    setImg(array);
+  }
+  const [previousImages, setPreviousImages] = useState([]);
+
   return (
     <div className="container">
-      {loading ? 
-       urls.map(url=> {
-        return <div className="imgCard" key={url.id} id={url.id} onClick={() => console.log(url.id)}>
-          <img src={url.link} /> 
-          <p>{url.title}</p>
-        </div>
-      }) : <h2>"Loading..."</h2> } 
+      {loading ? (
+        urls.map((url) => {
+          return (
+            <div className="imgCard" key={url.id} id={url.id} onClick={shuffle}>
+              <img src={url.link} id={url.id} />
+              <p id={url.id}>{url.title}</p>
+            </div>
+          );
+        })
+      ) : (
+        <h2>"Loading..."</h2>
+      )}
+      <p className="score">Score: {previousImages.length}</p>
     </div>
   );
 }
